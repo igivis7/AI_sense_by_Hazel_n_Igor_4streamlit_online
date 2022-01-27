@@ -26,7 +26,7 @@ if 'GGS_df' not in st.session_state:
 
 
 ## Load into a new model
-model_ff = tf.keras.models.load_model("../../data/tf_models/model_demo_run")
+model_ff = tf.keras.models.load_model("./tf_model_demo_run")
 
 N_of_readings = 100 #10Hz=100ms : 10 -> 1sec
 
@@ -56,42 +56,48 @@ st.write('6 Elements are extracted from the gas sensors. They are NO2, C2H5CH, V
 ## Button Data reading
 ##------------------------
 if st.button('Read data from sensor:'):
-    my_bar = st.progress(0)
-
-    ## collect data to predict
-    # N_of_readings = 10 #5Hz=200ms : 10 -> 2sec
-    serial_port = '/dev/ttyACM0' #for linux
-    # serial_port = '/dev/cu.usbmodem101' #for mac
-    baud_rate = 9600
-
-    GGS_list = []
-    init_time = round(time.time(),3)*1000
-    percent_complete_counter = 0
-    percent_complete = 0
-
-    with serial.Serial(serial_port, baud_rate) as ser:
-        for cc1 in range(10):
-            line_z = ser.readline();
-            line_dec_z = line_z.decode("utf-8")
-        while len(GGS_list) < N_of_readings:
-            line = ser.readline();
-            line_dec = line.decode("utf-8") #ser.readline returns a binary, convert to string
-            lst0 = line_dec.split(",")
-            lst1 = [int(x) for x in lst0]
-            if len(lst1)==6:
-                GGS_list += [[int(round(time.time(),3)*1000-init_time)] + lst1]
-                percent_complete_counter += 1
-                my_bar.progress(int(percent_complete_counter / N_of_readings * 100))
-    my_bar.progress(100)  #just for visualization    
-    
-    st.session_state['GGS_df'] = pd.DataFrame(GGS_list,
-                     columns=["time_ms", "NO2", 
-                     "C2H5OH", "VOC", "CO",
-                      "Temperature", "Humidity"])
-
-
+    st.write('In the online App version this function is not working bacause a connected Arduino with GGSv2 and DHT11 sensors is required.')
+    st.write('To play with a real device please see the repo: https://github.com/igivis7/AI_sense_by_Hazel_n_Igor')
+    st.write('Try "Get random premeasured test data" button to see demo')
 else:
     pass
+# if st.button('Read data from sensor:'):
+#     my_bar = st.progress(0)
+
+#     ## collect data to predict
+#     # N_of_readings = 10 #5Hz=200ms : 10 -> 2sec
+#     serial_port = '/dev/ttyACM0' #for linux
+#     # serial_port = '/dev/cu.usbmodem101' #for mac
+#     baud_rate = 9600
+
+#     GGS_list = []
+#     init_time = round(time.time(),3)*1000
+#     percent_complete_counter = 0
+#     percent_complete = 0
+
+#     with serial.Serial(serial_port, baud_rate) as ser:
+#         for cc1 in range(10):
+#             line_z = ser.readline();
+#             line_dec_z = line_z.decode("utf-8")
+#         while len(GGS_list) < N_of_readings:
+#             line = ser.readline();
+#             line_dec = line.decode("utf-8") #ser.readline returns a binary, convert to string
+#             lst0 = line_dec.split(",")
+#             lst1 = [int(x) for x in lst0]
+#             if len(lst1)==6:
+#                 GGS_list += [[int(round(time.time(),3)*1000-init_time)] + lst1]
+#                 percent_complete_counter += 1
+#                 my_bar.progress(int(percent_complete_counter / N_of_readings * 100))
+#     my_bar.progress(100)  #just for visualization    
+    
+#     st.session_state['GGS_df'] = pd.DataFrame(GGS_list,
+#                      columns=["time_ms", "NO2", 
+#                      "C2H5OH", "VOC", "CO",
+#                       "Temperature", "Humidity"])
+
+
+# else:
+#     pass
 
 ##------------------------
 ## Button Simulation
